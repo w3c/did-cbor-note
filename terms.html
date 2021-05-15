@@ -44,7 +44,7 @@ their identifiers, and other related properties.
 A globally unique persistent identifier that does not require a centralized
 registration authority and is often generated and/or registered
 cryptographically. The generic format of a DID is defined in <a
-href="#did-syntax"></a>. A specific <a>DID scheme</a> is defined in a <a>DID
+data-cite="DID-CORE#did-syntax"></a>. A specific <a>DID scheme</a> is defined in a <a>DID
 method</a> specification. Many—but not all—DID methods make use of
 <a>distributed ledger technology</a> (DLT) or some other form of decentralized
 network.
@@ -103,7 +103,7 @@ A set of data describing the <a>DID subject</a>, including mechanisms, such as
 cryptographic public keys, that the <a>DID subject</a> or a <a>DID delegate</a>
 can use to <a>authenticate</a> itself and prove its association with the
 <a>DID</a>. A DID document might have one or more different
-<a>representations</a> as defined in <a href="#representations"></a> or in the
+<a>representations</a> as defined in <a data-cite="DID-CORE#representations"></a> or in the
 W3C DID Specification Registries [[DID-SPEC-REGISTRIES]].
   </dd>
 
@@ -120,7 +120,7 @@ The portion of a <a>DID URL</a> that follows the first hash sign character
 A definition of how a specific <a>DID method scheme</a> is implemented. A DID method is
 defined by a DID method specification, which specifies the precise operations by
 which <a>DIDs</a> and <a>DID documents</a> are created, resolved, updated,
-and deactivated. See <a href="#methods"></a>.
+and deactivated. See <a data-cite="DID-CORE#methods"></a>.
   </dd>
 
   <dt><dfn data-lt="DID paths">DID path</dfn></dt>
@@ -130,7 +130,7 @@ The portion of a <a>DID URL</a> that begins with and includes the first forward
 slash (<code>/</code>) character and ends with either a question mark
 (<code>?</code>) character, a fragment hash sign (<code>#</code>) character,
 or the end of the <a>DID URL</a>. DID path syntax is identical to URI path syntax.
-See <a href="#path"></a>.
+See <a data-cite="DID-CORE#path"></a>.
   </dd>
 
   <dt><dfn data-lt="DID queries">DID query</dfn></dt>
@@ -138,7 +138,7 @@ See <a href="#path"></a>.
   <dd>
 The portion of a <a>DID URL</a> that follows and includes the first question
 mark character (<code>?</code>). DID query syntax is identical to URI query
-syntax. See <a href="#query"></a>.
+syntax. See <a data-cite="DID-CORE#query"></a>.
   </dd>
 
   <dt><dfn>DID resolution</dfn></dt>
@@ -148,7 +148,7 @@ The process that takes as its input a <a>DID</a> and a set of resolution
 options and returns a <a>DID document</a> in a conforming <a>representation</a>
 plus additional metadata. This process relies on the "Read" operation of the
 applicable <a>DID method</a>. The inputs and outputs of this process are
-defined in <a href="#did-resolution"></a>.
+defined in <a data-cite="DID-CORE#did-resolution"></a>.
   </dd>
 
   <dt><dfn data-lt="DID resolvers">DID resolver</dfn></dt>
@@ -164,7 +164,7 @@ conforming <a>DID document</a> as output.
   <dd>
 The formal syntax of a <a>decentralized identifier</a>. The generic DID scheme
 begins with the prefix <code>did:</code> as defined in <a
-href="#did-syntax"></a>. Each <a>DID method</a> specification defines a specific
+data-cite="DID-CORE#did-syntax"></a>. Each <a>DID method</a> specification defines a specific
 DID method scheme that works with that specific <a>DID method</a>. In a specific DID
 method scheme, the DID method name follows the first colon and terminates with
 the second colon, e.g., <code>did:example:</code>
@@ -182,7 +182,7 @@ digital thing, logical thing, etc.
 
   <dd>
 A <a>DID</a> plus any additional syntactic component that conforms to the
-definition in <a href="#did-url-syntax"></a>. This includes an optional <a>DID
+definition in <a data-cite="DID-CORE#did-url-syntax"></a>. This includes an optional <a>DID
 path</a> (with its leading <code>/</code> character), optional <a>DID query</a>
 (with its leading <code>?</code> character), and optional <a>DID fragment</a>
 (with its leading <code>#</code> character).
@@ -200,7 +200,7 @@ fetch a <a>DID document</a> indicated by the <a>DID</a> contained within the
 <a>DID URL</a>. The dereferencing process can then perform additional processing
 on the <a>DID document</a> to return the dereferenced resource indicated by the
 <a>DID URL</a>. The inputs and outputs of this process are defined in
-<a href="#did-url-dereferencing"></a>.
+<a data-cite="DID-CORE#did-url-dereferencing"></a>.
   </dd>
 
   <dt><dfn data-lt="DID URL dereferencers">DID URL dereferencer</dfn></dt>
@@ -245,7 +245,7 @@ past, current, or desired state of a given resource, in a format that can be
 readily communicated via the protocol, and that consists of a set of
 representation metadata and a potentially unbounded stream of representation
 data." A <a>DID document</a> is a representation of information describing a
-<a>DID subject</a>. See <a href="#representations"></a>.
+<a>DID subject</a>. See <a data-cite="DID-CORE#representations"></a>.
   </dd>
 
   <dt><dfn data-lt="service">services</dfn></dt>
@@ -327,7 +327,7 @@ method, even though descriptions of the process might not use the words
     <p>
 An expression of the relationship between the <a>DID subject</a> and a
 <a>verification method</a>. An example of a verification relationship is
-<a href="#authentication"></a>.
+<a data-cite="DID-CORE#authentication"></a>.
     </p>
   </dd>
 
