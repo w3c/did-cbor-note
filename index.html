@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>application/did+cbor v1.0</title>
+  <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
+  <!--
+    === NOTA BENE ===
+    For the three scripts below, if your spec resides on dev.w3 you can check
+    them out in the same tree and use relative links so that they'll work
+    offline.
+  -->
+
+  <script class="remove"
+    src="https://unpkg.com/browse/jquery/dist/jquery.min.js"></script>
+  <script class="remove"
+    src="https://www.w3.org/Tools/respec/respec-w3c"></script>
+  <script class="removeOnSave"
+    src="https://unpkg.com/reqlist/lib/reqlist.js"></script>
+  <link class="removeOnSave" rel="stylesheet" type="text/css"
+    href="https://unpkg.com/reqlist/lib/reqlist.css" />
+
+  <script class='remove' src="./common.js"></script>
+  <script class="remove" type="text/javascript">
+  var respecConfig = {
+    // the W3C WG and public mailing list
+    group: "did",
+    wgPublicList: "public-did-wg",
+
+    // the specification's short name, as in http://www.w3.org/TR/short-name/
+    shortName: "did-representation-cbor",
+
+    // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
+    specStatus: "NOTE",
+
+    // W3C Candidate Recommendation information
+    //crEnd: "2021-05-04",
+    //implementationReportURI: "https://w3c.github.io/did-test-suite/",
+
+    // Editor's Draft URL
+    edDraftURI: "https://w3c.github.io/did-representation-cbor/",
+
+    // subtitle for the spec
+    subtitle: "A CBOR representation for DID Documents",
+
+    // if you wish the publication date to be other than today, set this
+    //publishDate:  "2019-11-07",
+
+    // previously published draft, uncomment this and set its
+    // YYYY-MM-DD date and its maturity status
+    //previousPublishDate:  "2021-03-01",
+    //previousMaturity:  "WD",
+
+    // automatically allow term pluralization
+    pluralize: true,
+
+    // extend the bibliography entries
+    localBiblio: ccg.localBiblio,
+    xref: "web-platform",
+    github: {
+      repoURL: "https://github.com/w3c/did-cbor-note/",
+      branch: "main"
+    },
+    includePermalinks: false,
+
+    // Uncomment these to use the respec extension that generates a list of
+    //   normative statements:
+    preProcess: [/*prepare_reqlist*/],
+    postProcess: [/*add_reqlist_button*/, restrictRefs],
+
+    // list of specification editors
+    editors: [{
+        name: "Jonathan Holt",
+        url: "https://github.com/jonnycrunch",
+        company: "TranSendX",
+        companyURL: "https://transendx.com/",
+        w3cid: 3096
+      },
+      {
+        name: "Manu Sporny",
+        url: "http://manu.sporny.org/",
+        company: "Digital Bazaar",
+        companyURL: "https://digitalbazaar.com/",
+        w3cid: 41758
+      }
+    ],
+
+    // list of specification authors
+    authors: [{
+        name: "Jonathan Holt",
+        url: "https://github.com/jonnycrunch",
+        company: "TranSendX",
+        companyURL: "https://transendx.com/",
+        w3cid: 3096
+      }]
+    };
+  </script>
+  <style>
+  pre .highlight {
+    font-weight: bold;
+    color: green;
+  }
+  pre .comment {
+    color: SteelBlue;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  code a[href] {
+    color: inherit;
+    border-bottom: none;
+  }
+  code a[href]:hover {
+    border-bottom: 1px solid #c63501;
+  }
+  table.column-width-50 td {
+    width: 50%;
+  }
+  </style>
+</head>
+<body data-cite="infra rfc3986">
+  <section id='abstract'>
+
+    <p>
+This section defines the <a data-cite="DID-CORE#production">production</a>
+and <a data-cite="DID-CORE#consumption">consumption</a> rules
+for a CBOR <a data-cite="DID-CORE#representation">representation</a> for
+DID Documents [[!DID-CORE]].
+    </p>
+
+  </section>
+
+  <section id='sotd'>
+
+    <p>
+The W3C Decentralized Identifier Working Group has published this document as a
+W3C NOTE and is requesting that software developers provide experimental
+implementations designed to test the implementability of all of the features in
+this document.
+    </p>
+
+    <p>
+Comments regarding this document are welcome. Please file issues
+directly on <a href="https://github.com/w3c/did-core/issues/">GitHub</a>,
+or send them
+to <a href="mailto:public-did-wg@w3.org">public-did-wg@w3.org</a> (
+<a href="mailto:public-did-wg-request@w3.org?subject=subscribe">subscribe</a>,
+<a href="https://lists.w3.org/Archives/Public/public-did-wg/">archives</a>).
+    </p>
+
+  </section>
+
+  <section>
+    <h2>Terminology</h2>
+
+    <div data-include="terms.html">
+    </div>
+
+    <p>
+In addition to the terminology above, this specification also uses terminology
+from the [[INFRA]] specification to formally define the <a
+data-cite="DID-CORE#data-model">data model</a>. When [[INFRA]] terminology is used, such as
+<a data-cite="INFRA#strings">string</a>, <a
+data-cite="INFRA#ordered-set">set</a>, and <a
+data-cite="INFRA#maps">map</a>, it is linked directly to that specification.
+    </p>
+
+  </section>
+
+  <section>
+      <h2>Introduction</h2>
+
+      <p>
+This section defines the <a data-cite="DID-CORE#production">production</a>
+and <a data-cite="DID-CORE#consumption">consumption</a> rules
+for a CBOR <a data-cite="DID-CORE#representation">representation</a> for DID Documents.
+      </p>
+
+      <section>
+        <h3>CBOR Production</h3>
+
+        <p>
+The <a data-cite="DID-CORE#DID document">DID document</a>, DID document data structures, and
+representation-specific entries <a data-cite="INFRA#maps">map</a> MUST be
+serialized to the CBOR <a data-cite="DID-CORE#representation">representation</a> according to the following
+<a data-cite="DID-CORE#production">production</a> rules:
+        </p>
+
+        <table class="simple" id="cbor-representation-production">
+          <thead>
+            <tr>
+              <th>
+Data&nbsp;Type
+              </th>
+              <th>
+CBOR Representation Type
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+<a data-cite="INFRA#maps">map</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5), where each
+entry is represented as a member of the CBOR map. The entry key is expressed
+as a <a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) as the
+key, and the entry value according to its type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="INFRA#list">list</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR array</a> (major type 4), where each
+element of the list is added, in order, as a value of the array according to its
+type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="INFRA#ordered-set">set</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR array</a> (major type 4), where each
+element of the list is added, in order, as a value of the array according to its
+type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="DID-CORE#datetime">datetime</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) formatted as
+an <a data-cite="XMLSCHEMA11-2#dateTime">XML Datetime</a> normalized to
+UTC 00:00 and without sub-second decimal precision. For example:
+<code>2020-12-20T19:17:47Z</code>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="INFRA#string">string</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3).
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="DID-CORE#integer">integer</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR integer</a> (major type 0 or 1),
+choosing the shortest byte representation.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="DID-CORE#double">double</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.1">CBOR floating-point number</a> (major type
+7). All floating point values MUST be encoded as 64-bits (additional type
+value 27), even for integral values.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="INFRA#boolean">boolean</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 21 (true) or 20 (false).
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="INFRA#null">null</a>
+              </td>
+              <td>
+A <a data-cite="RFC8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 22 (null).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In addition to the data type production rules above, the following rules apply
+for <a data-cite="DID-CORE#conforming producers</a> that serialize CBOR <a data-cite="DID-CORE#">representations">conforming producers</a> that serialize CBOR <a data-cite="DID-CORE#">representations</a>:
+        </p>
+        <ol>
+          <li>
+Indefinite-length items are not allowed and MUST be made a <a
+data-cite="RFC8949#section-3.2.2">CBOR definite length.</a>
+          </li>
+          <li>
+All CBOR tags MUST be retained regardless of whether they are optional.
+          </li>
+          <li>
+All four <a data-cite="RFC8949#section-4.2.1">Canonical CBOR rules</a>
+listed in [[RFC8949]] MUST be applied to all relevant data types.
+          </li>
+        </ol>
+
+        <p>
+All entries of a <a data-cite="DID-CORE#DID document">DID document</a> MUST be included in the root <a
+data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5). Entries MAY contain
+additional data substructures subject to the value representation rules in the
+list above. When serializing a <a data-cite="DID-CORE#DID document">DID document</a> to its CBOR
+<a data-cite="DID-CORE#representation</a>, a <a data-cite="DID-CORE#">conforming producer">representation</a>, a <a data-cite="DID-CORE#">conforming producer</a> MUST specify a media type of
+<code>application/did+cbor</code> to downstream applications such as described
+in <a data-cite="DID-CORE#did-resolution-metadata"></a>.
+        </p>
+
+        <p>
+The following examples express the CBOR <a data-cite="DID-CORE#representation">representation</a> of a
+<a data-cite="DID-CORE#DID document">DID document</a> in hexidecimal notation, and in CBOR diagnostic notation:
+        </p>
+
+      <pre class="example nohighlight"
+        title="DID Document encoded as CBOR (hexadecimal)">
+A2626964781E6469643A6578616D706C653A313233343536373839616263
+6465666768696E61757468656E7469636174696F6E81A462696478256469
+643A6578616D706C653A313233343536373839616263646566676869236B
+6579732D316474797065781A45643235353139566572696669636174696F
+6E4B6579323031386A636F6E74726F6C6C6572781E6469643A6578616D70
+6C653A3132333435363738396162636465666768696F7075626C69634B65
+79426173653538782C483343324156764C4D7636676D4D4E616D33755641
+6A5A70666B634A437744776E5A6E367A3377586D715056
+      </pre>
+
+      <pre style="font-size: 50%" class="example nohighlight"
+        title="DID Document encoded as CBOR (diagnostic notation)">
+A2                                   # map(2)
+62                                   # text(2)
+   6964                              # "id"
+78 1E                                # text(30)
+   6469643A6578616D706C653A313233343536373839616263646566676869 # "did:example:123456789abcdefghi"
+6E                                   # text(14)
+   61757468656E7469636174696F6E      # "authentication"
+81                                   # array(1)
+   A4                                # map(4)
+      62                             # text(2)
+         6964                        # "id"
+      78 25                          # text(37)
+         6469643A6578616D706C653A313233343536373839616263646566676869236B6579732D31 # "did:example:123456789abcdefghi#keys-1"
+      64                             # text(4)
+         74797065                    # "type"
+      78 1A                          # text(26)
+         45643235353139566572696669636174696F6E4B657932303138 # "Ed25519VerificationKey2020"
+      6A                             # text(10)
+         636F6E74726F6C6C6572        # "controller"
+      78 1E                          # text(30)
+         6469643A6578616D706C653A313233343536373839616263646566676869 # "did:example:123456789abcdefghi"
+      6F                             # text(15)
+         7075626C69634B6579426173653538 # "publicKeyMultibase"
+      78 2C                          # text(44)
+         483343324156764C4D7636676D4D4E616D337556416A5A70666B634A437744776E5A6E367A3377586D715056 # "zH3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"
+              </pre>
+
+      </section>
+
+      <section>
+        <h3>CBOR Consumption</h3>
+
+        <p>
+The <a data-cite="DID-CORE#DID document">DID document</a> and any DID document data structures expressed by the <a
+data-cite="DID-CORE#data-model">data model</a> MUST be deserialized into the <a
+data-cite="DID-CORE#data-model">data model</a> according to the following <a data-cite="DID-CORE#consumption">consumption</a>
+rules:
+        </p>
+
+        <table class="simple column-width-50" id="cbor-representation-consumption">
+          <thead>
+            <tr>
+              <th>
+CBOR Representation Type
+              </th>
+              <th>
+Data&nbsp;Type
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5)
+              </td>
+              <td>
+A <a data-cite="INFRA#maps">map</a>, where each data item of the
+CBOR map is added as an entry to the map with the entry key being the
+data item name and the value converted based on the CBOR type and, if available,
+entry definition, as defined here; as no order can be enforced for general CBOR
+maps, no insertion order is guaranteed.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR array</a> (major type 4), where the <a
+data-cite="DID-CORE#data-model">data model</a> entry value is a <a
+data-cite="INFRA#list">list</a> or unknown
+              </td>
+              <td>
+A <a data-cite="INFRA#list">list</a>, where each value of the <a
+data-cite="RFC8949#section-3.1">CBOR array</a> is added to the list in order,
+converted based on the CBOR type of the array value, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR array</a> (major type 4), where the <a
+data-cite="DID-CORE#data-model">data model</a> entry value is a <a
+data-cite="INFRA#ordered-set">set</a>
+              </td>
+              <td>
+A <a data-cite="INFRA#ordered-set">set</a>, where each value of
+the <a data-cite="RFC8949#section-3.1">CBOR array</a> is added to the
+set in order, converted based on the CBOR type of the array value as defined in
+this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) where the
+<a data-cite="DID-CORE#data-model">data model</a> entry value is a <a data-cite="DID-CORE#datetime">datetime</a>
+              </td>
+              <td>
+A <a data-cite="DID-CORE#datetime">datetime</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3), where the <a
+data-cite="DID-CORE#data-model">data model</a> entry value type is <a data-cite="DID-CORE#string">string</a> or
+unknown
+              </td>
+              <td>
+A <a data-cite="INFRA#string">string</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR integer</a> (major type 0 or 1),
+choosing the shortest byte representation
+              </td>
+              <td>
+An <a data-cite="DID-CORE#integer">integer</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.1">CBOR floating-point number</a> (major type
+7)
+              </td>
+              <td>
+A <a data-cite="DID-CORE#double">double</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 21 (True) or 20 (False)
+              </td>
+              <td>
+A <a data-cite="INFRA#boolean">boolean</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a data-cite="RFC8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 22 (Null)
+              </td>
+              <td>
+A <a data-cite="INFRA#null">null</a> value.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In addition to the data type consumption rules above, the following rules apply
+for <a data-cite="DID-CORE#conforming consumers</a> that deserialize CBOR <a data-cite="DID-CORE#">representations">conforming consumers</a> that deserialize CBOR <a data-cite="DID-CORE#">representations</a>:
+        </p>
+
+        <ol>
+          <li>
+<a data-cite="RFC8949#section-3.2.2">CBOR
+indefinite-length items</a> are not allowed and MUST produce an error.
+          </li>
+          <li>
+A duplicate key in the same CBOR map MUST produce an error.
+          </li>
+          <li>
+All CBOR tags MUST be retained for CBOR <a data-cite="DID-CORE#production">production</a> regardless of whether
+they are optional.
+          </li>
+        </ol>
+
+        <p>
+If media type information is available to a <a data-cite="DID-CORE#conforming consumer">conforming consumer</a> and the
+media type value is <code>application/did+cbor</code>, then the data structure
+being consumed is a <a data-cite="DID-CORE#DID document">DID document</a>, and the root element MUST be a <a
+data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5) where all members of
+the object are entries of the <a data-cite="DID-CORE#DID document</a>. A <a data-cite="DID-CORE#">conforming consumer">DID document</a>. A <a data-cite="DID-CORE#">conforming consumer</a>
+for a CBOR <a data-cite="DID-CORE#representation</a> that is consuming a <a data-cite="DID-CORE#">DID document">representation</a> that is consuming a <a data-cite="DID-CORE#">DID document</a> with a
+root element that is not a <a data-cite="RFC8949#section-3.1">CBOR map</a>
+(major type 5) MUST report an error.
+        </p>
+
+
+      </section>
+    </section>
+  </section>
+
+  <section class="appendix">
+    <h1>IANA Considerations</h1>
+
+    <p>
+This section will be submitted to the Internet Engineering Steering Group
+(IESG) for review, approval, and registration with IANA when this specification
+becomes a W3C Proposed Recommendation.
+    </p>
+
+    <section>
+      <h2>application/did+cbor</h2>
+      <dl>
+        <dt>Type name:</dt>
+        <dd>application</dd>
+        <dt>Subtype name:</dt>
+        <dd>did+cbor</dd>
+        <dt>Required parameters:</dt>
+        <dd>None</dd>
+        <dt>Optional parameters:</dt>
+        <dd>None</dd>
+        <dt>Encoding considerations:</dt>
+        <dd>
+See <a data-cite="RFC8949#section-4.2.1">RFC&nbsp;8949, section 4.2.1</a>.
+        </dd>
+        <dt>Security considerations:</dt>
+        <dd>
+See <a data-cite="RFC8949#section-10">RFC&nbsp;8949, section 10</a> [[RFC8949]].
+        </dd>
+        <dt>Interoperability considerations:</dt>
+        <dd>Not Applicable</dd>
+        <dt>Published specification:</dt>
+        <dd>http://www.w3.org/TR/did-core/</dd>
+        <dt>Applications that use this media type:</dt>
+        <dd>
+Any application that requires an identifier that is decentralized, persistent,
+cryptographically verifiable, and resolvable. Applications typically consist of
+cryptographic identity systems, decentralized networks of devices, and
+websites that issue or verify W3C Verifiable Credentials.
+        </dd>
+        <dt>Additional information:</dt>
+        <dd>
+          <dl>
+            <dt>Magic number(s):</dt>
+            <dd>Not Applicable</dd>
+            <dt>File extension(s):</dt>
+            <dd>.didcbor</dd>
+            <dt>Macintosh file type code(s):</dt>
+            <dd>TEXT</dd>
+          </dl>
+        </dd>
+        <dt>Person &amp; email address to contact for further information:</dt>
+        <dd>Ivan Herman &lt;ivan@w3.org&gt;</dd>
+        <dt>Intended usage:</dt>
+        <dd>Common</dd>
+        <dt>Restrictions on usage:</dt>
+        <dd>None</dd>
+        <dt>Author(s):</dt>
+        <dd>Drummond Reed, Manu Sporny, Markus Sabadello, Dave Longley, Christopher Allen</dd>
+        <dt>Change controller:</dt>
+        <dd>W3C</dd>
+      </dl>
+
+       <p>
+Fragment identifiers used with
+<a data-cite="DID-CORE#application-did-cbor">application/did+cbor</a> are treated
+according to the rules defined in <a data-cite="DID-CORE#fragment"></a>.
+      </p>
+    </section>
+
+  </section>
+
+</body>
+</html>
