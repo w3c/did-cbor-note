@@ -1,0 +1,1233 @@
+<!DOCTYPE html><html lang="en" dir="ltr"><head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="generator" content="ReSpec 26.8.12">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<style>
+span.example-title{text-transform:none}
+aside.example,div.example,div.illegal-example{padding:.5em;margin:1em 0;position:relative;clear:both}
+div.illegal-example{color:red}
+div.illegal-example p{color:#000}
+aside.example,div.example{padding:.5em;border-left-width:.5em;border-left-style:solid;border-color:#e0cb52;background:#fcfaee}
+aside.example div.example{border-left-width:.1em;border-color:#999;background:#fff}
+aside.example div.example span.example-title{color:#999}
+.example pre{background-color:rgba(0,0,0,.03)}
+</style>
+<style>
+.issue-label{text-transform:initial}
+.warning>p:first-child{margin-top:0}
+.warning{padding:.5em;border-left-width:.5em;border-left-style:solid}
+span.warning{padding:.1em .5em .15em}
+.issue.closed span.issue-number{text-decoration:line-through}
+.warning{border-color:#f11;border-width:.2em;border-style:solid;background:#fbe9e9}
+.warning-title:before{content:"⚠";font-size:1.3em;float:left;padding-right:.3em;margin-top:-.3em}
+li.task-list-item{list-style:none}
+input.task-list-item-checkbox{margin:0 .35em .25em -1.6em;vertical-align:middle}
+.issue a.respec-gh-label{padding:5px;margin:0 2px 0 2px;font-size:10px;text-transform:none;text-decoration:none;font-weight:700;border-radius:4px;position:relative;bottom:2px;border:none;display:inline-block}
+</style>
+<style>
+dfn{cursor:pointer}
+.dfn-panel{position:absolute;z-index:35;min-width:300px;max-width:500px;padding:.5em .75em;margin-top:.6em;font:small Helvetica Neue,sans-serif,Droid Sans Fallback;background:#fff;color:#000;box-shadow:0 1em 3em -.4em rgba(0,0,0,.3),0 0 1px 1px rgba(0,0,0,.05);border-radius:2px}
+.dfn-panel:not(.docked)>.caret{position:absolute;top:-9px}
+.dfn-panel:not(.docked)>.caret::after,.dfn-panel:not(.docked)>.caret::before{content:"";position:absolute;border:10px solid transparent;border-top:0;border-bottom:10px solid #fff;top:0}
+.dfn-panel:not(.docked)>.caret::before{border-bottom:9px solid #a2a9b1}
+.dfn-panel *{margin:0}
+.dfn-panel b{display:block;color:#000;margin-top:.25em}
+.dfn-panel ul a[href]{color:#333}
+.dfn-panel>div{display:flex}
+.dfn-panel a.self-link{font-weight:700;margin-right:auto}
+.dfn-panel .marker{padding:.1em;margin-left:.5em;border-radius:.2em;text-align:center;white-space:nowrap;font-size:90%;color:#040b1c}
+.dfn-panel .marker.dfn-exported{background:#d1edfd;box-shadow:0 0 0 .125em #1ca5f940}
+.dfn-panel .marker.idl-block{background:#8ccbf2;box-shadow:0 0 0 .125em #0670b161}
+.dfn-panel a:not(:hover){text-decoration:none!important;border-bottom:none!important}
+.dfn-panel a[href]:hover{border-bottom-width:1px}
+.dfn-panel ul{padding:0}
+.dfn-panel li{margin-left:1em}
+.dfn-panel.docked{position:fixed;left:.5em;top:unset;bottom:2em;margin:0 auto;max-width:calc(100vw - .75em * 2 - .5em - .2em * 2);max-height:30vh;overflow:auto}
+</style>
+  
+<title>The Plain CBOR Representation v1.0</title>
+  
+  
+
+  
+  
+<style id="respec-mainstyle">
+@keyframes pop{
+0%{transform:scale(1,1)}
+25%{transform:scale(1.25,1.25);opacity:.75}
+100%{transform:scale(1,1)}
+}
+.hljs{background:0 0!important}
+a abbr,h1 abbr,h2 abbr,h3 abbr,h4 abbr,h5 abbr,h6 abbr{border:none}
+dfn{font-weight:700}
+a.internalDFN{color:inherit;border-bottom:1px solid #99c;text-decoration:none}
+a.externalDFN{color:inherit;border-bottom:1px dotted #ccc;text-decoration:none}
+a.bibref{text-decoration:none}
+.respec-offending-element:target{animation:pop .25s ease-in-out 0s 1}
+.respec-offending-element,a[href].respec-offending-element{text-decoration:red wavy underline}
+@supports not (text-decoration:red wavy underline){
+.respec-offending-element:not(pre){display:inline-block}
+.respec-offending-element{background:url(data:image/gif;base64,R0lGODdhBAADAPEAANv///8AAP///wAAACwAAAAABAADAEACBZQjmIAFADs=) bottom repeat-x}
+}
+#references :target{background:#eaf3ff;animation:pop .4s ease-in-out 0s 1}
+cite .bibref{font-style:normal}
+code{color:#c63501}
+th code{color:inherit}
+a[href].orcid{padding-left:4px;padding-right:4px}
+a[href].orcid>svg{margin-bottom:-2px}
+.toc a,.tof a{text-decoration:none}
+a .figno,a .secno{color:#000}
+ol.tof,ul.tof{list-style:none outside none}
+.caption{margin-top:.5em;font-style:italic}
+table.simple{border-spacing:0;border-collapse:collapse;border-bottom:3px solid #005a9c}
+.simple th{background:#005a9c;color:#fff;padding:3px 5px;text-align:left}
+.simple th a{color:#fff;padding:3px 5px;text-align:left}
+.simple th[scope=row]{background:inherit;color:inherit;border-top:1px solid #ddd}
+.simple td{padding:3px 10px;border-top:1px solid #ddd}
+.simple tr:nth-child(even){background:#f0f6ff}
+.section dd>p:first-child{margin-top:0}
+.section dd>p:last-child{margin-bottom:0}
+.section dd{margin-bottom:1em}
+.section dl.attrs dd,.section dl.eldef dd{margin-bottom:0}
+#issue-summary>ul{column-count:2}
+#issue-summary li{list-style:none;display:inline-block}
+details.respec-tests-details{margin-left:1em;display:inline-block;vertical-align:top}
+details.respec-tests-details>*{padding-right:2em}
+details.respec-tests-details[open]{z-index:999999;position:absolute;border:thin solid #cad3e2;border-radius:.3em;background-color:#fff;padding-bottom:.5em}
+details.respec-tests-details[open]>summary{border-bottom:thin solid #cad3e2;padding-left:1em;margin-bottom:1em;line-height:2em}
+details.respec-tests-details>ul{width:100%;margin-top:-.3em}
+details.respec-tests-details>li{padding-left:1em}
+a[href].self-link:hover{opacity:1;text-decoration:none;background-color:transparent}
+h2,h3,h4,h5,h6{position:relative}
+aside.example .marker>a.self-link{color:inherit}
+h2>a.self-link,h3>a.self-link,h4>a.self-link,h5>a.self-link,h6>a.self-link{border:none;color:inherit;font-size:83%;height:2em;left:-1.6em;opacity:.5;position:absolute;text-align:center;text-decoration:none;top:0;transition:opacity .2s;width:2em}
+h2>a.self-link::before,h3>a.self-link::before,h4>a.self-link::before,h5>a.self-link::before,h6>a.self-link::before{content:"§";display:block}
+@media (max-width:767px){
+dd{margin-left:0}
+h2>a.self-link,h3>a.self-link,h4>a.self-link,h5>a.self-link,h6>a.self-link{left:auto;top:auto}
+}
+@media print{
+.removeOnSave{display:none}
+}
+</style>
+  
+  
+
+  
+  
+  
+<style>
+
+  pre .highlight {
+    font-weight: bold;
+    color: green;
+  }
+  pre .comment {
+    color: SteelBlue;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  code a[href] {
+    color: inherit;
+    border-bottom: none;
+  }
+  code a[href]:hover {
+    border-bottom: 1px solid #c63501;
+  }
+  table.column-width-50 td {
+    width: 50%;
+  }
+  
+</style>
+
+<meta name="description" content="This document defines the production
+and consumption rules
+for a CBOR representation for
+DID Documents [DID-CORE].">
+<link rel="canonical" href="https://www.w3.org/TR/did-representation-cbor/">
+<style>
+var{position:relative;cursor:pointer}
+var[data-type]::after,var[data-type]::before{position:absolute;left:50%;top:-6px;opacity:0;transition:opacity .4s;pointer-events:none}
+var[data-type]::before{content:"";transform:translateX(-50%);border-width:4px 6px 0 6px;border-style:solid;border-color:transparent;border-top-color:#000}
+var[data-type]::after{content:attr(data-type);transform:translateX(-50%) translateY(-100%);background:#000;text-align:center;font-family:"Dank Mono","Fira Code",monospace;font-style:normal;padding:6px;border-radius:3px;color:#daca88;text-indent:0;font-weight:400}
+var[data-type]:hover::after,var[data-type]:hover::before{opacity:1}
+</style>
+<script id="initialUserConfig" type="application/json">{
+  "group": "did",
+  "wgPublicList": "public-did-wg",
+  "shortName": "did-representation-cbor",
+  "specStatus": "NOTE",
+  "edDraftURI": "https://w3c.github.io/did-representation-cbor/",
+  "subtitle": "Expressing a DID Document using the application/did+cbor media type",
+  "publishDate": "2021-06-29",
+  "pluralize": true,
+  "localBiblio": {
+    "DID-SPEC-REGISTRIES": {
+      "title": "DID Specification Registries",
+      "href": "https://w3c.github.io/did-spec-registries/",
+      "authors": [
+        "Orie Steele",
+        "Manu Sporny"
+      ],
+      "status": "ED",
+      "publisher": "Decentralized Identifier Working Group"
+    },
+    "REST": {
+      "title": "Architectural Styles and the Design of Network-based Software Architectures",
+      "date": "2000",
+      "href": "http://www.ics.uci.edu/~fielding/pubs/dissertation/",
+      "authors": [
+        "Fielding, Roy Thomas"
+      ],
+      "publisher": "University of California, Irvine."
+    },
+    "VC-USECASES": {
+      "title": "Verifiable Claims Use Cases",
+      "href": "https://www.w3.org/TR/verifiable-claims-use-cases/",
+      "authors": [
+        "Shane McCarron",
+        "Daniel Burnett",
+        "Gregg Kellogg",
+        "Brian Sletten",
+        "Manu Sporny"
+      ],
+      "status": "FPWD",
+      "publisher": "Verifiable Claims Working Group"
+    },
+    "DID-USE-CASES": {
+      "title": "Decentralized Identifier Use Cases",
+      "href": "https://www.w3.org/TR/did-use-cases/",
+      "authors": [
+        "Joe Andrieu",
+        "Kim Hamilton Duffy",
+        "Ryan Grant",
+        "Adrian Gropper"
+      ],
+      "status": "ED",
+      "publisher": "Decentralized Identifier Working Group"
+    },
+    "HTTP-SIGNATURES": {
+      "aliasOf": "http-signatures"
+    },
+    "MACAROONS": {
+      "title": "Macaroons",
+      "href": "http://macaroons.io/",
+      "authors": [
+        "Arnar Birgisson",
+        "Joe Gibbs Politz",
+        "Úlfar Erlingsson",
+        "Ankur Taly",
+        "Michael Vrable",
+        "Mark Lentczner"
+      ],
+      "status": "unofficial",
+      "publisher": "Credentials Community Group"
+    },
+    "OPEN-BADGES": {
+      "title": "Open Badges",
+      "href": "https://github.com/openbadges/openbadges-specification",
+      "authors": [
+        "Brian Brennan",
+        "Mike Larsson",
+        "Chris McAvoy",
+        "Nate Otto",
+        "Kerri Lemoie"
+      ],
+      "status": "BA-DRAFT",
+      "publisher": "Badge Alliance Standard Working Group"
+    },
+    "RDF-NORMALIZATION": {
+      "title": "RDF Dataset Normalization",
+      "href": "http://json-ld.github.io/normalization/spec/",
+      "authors": [
+        "Dave Longley",
+        "Manu Sporny"
+      ],
+      "status": "CG-DRAFT",
+      "publisher": "Credentials W3C Community Group"
+    },
+    "LD-PROOFS": {
+      "title": "Linked Data Proofs",
+      "href": "https://w3c-dvcg.github.io/ld-proofs/",
+      "authors": [
+        "Manu Sporny",
+        "Dave Longley"
+      ],
+      "status": "CG-DRAFT",
+      "publisher": "Digital Verification Community Group"
+    },
+    "LD-SIGNATURES": {
+      "title": "Linked Data Signatures",
+      "href": "https://w3c-dvcg.github.io/ld-signatures/",
+      "authors": [
+        "Manu Sporny",
+        "Dave Longley"
+      ],
+      "status": "CG-DRAFT",
+      "publisher": "Digital Verification Community Group"
+    },
+    "MATRIX-URIS": {
+      "title": "Matrix URIs - Ideas about Web Architecture",
+      "date": "December 1996",
+      "href": "https://www.w3.org/DesignIssues/MatrixURIs.html",
+      "authors": [
+        "Tim Berners-Lee"
+      ],
+      "status": "Personal View"
+    },
+    "HASHLINK": {
+      "title": "Cryptographic Hyperlinks",
+      "date": "December 2018",
+      "href": "https://tools.ietf.org/html/draft-sporny-hashlink-05",
+      "authors": [
+        "Manu Sporny"
+      ],
+      "status": "Internet-Draft",
+      "publisher": "IETF"
+    },
+    "BASE58": {
+      "title": "The Base58 Encoding Scheme",
+      "date": "October 2020",
+      "href": "https://tools.ietf.org/html/draft-msporny-base58",
+      "authors": [
+        "Manu Sporny"
+      ],
+      "status": "Internet-Draft",
+      "publisher": "IETF"
+    },
+    "DNS-DID": {
+      "title": "The Decentralized Identifier (DID) in the DNS",
+      "date": "February 2019",
+      "href": "https://datatracker.ietf.org/doc/draft-mayrhofer-did-dns/",
+      "authors": [
+        "Alexander Mayrhofer",
+        "Dimitrij Klesev",
+        "Markus Sabadello"
+      ],
+      "status": "Internet-Draft"
+    },
+    "DID-RESOLUTION": {
+      "title": "Decentralized Identifier Resolution",
+      "href": "https://w3c-ccg.github.io/did-resolution/",
+      "authors": [
+        "Markus Sabadello",
+        "Dmitri Zagidulin"
+      ],
+      "status": "Draft Community Group Report",
+      "publisher": "Credentials Community Group"
+    },
+    "DID-RUBRIC": {
+      "title": "Decentralized Characteristics Rubric v1.0",
+      "href": "https://w3c.github.io/did-rubric/",
+      "authors": [
+        "Joe Andrieu"
+      ],
+      "status": "Draft Community Group Report",
+      "publisher": "Credentials Community Group"
+    },
+    "PRIVACY-BY-DESIGN": {
+      "title": "Privacy by Design",
+      "href": "https://iapp.org/media/pdf/resource_center/pbd_implement_7found_principles.pdf",
+      "authors": [
+        "Ann Cavoukian"
+      ],
+      "date": "2011",
+      "publisher": "Information and Privacy Commissioner"
+    },
+    "MULTIBASE": {
+      "title": "The Multibase Encoding Scheme",
+      "date": "February 2021",
+      "href": "https://datatracker.ietf.org/doc/html/draft-multiformats-multibase-03",
+      "authors": [
+        "Juan Benet",
+        "Manu Sporny"
+      ],
+      "status": "Internet-Draft",
+      "publisher": "IETF"
+    },
+    "JSON-LD11": {
+      "title": "JSON-LD 1.1",
+      "date": "2020-07-16",
+      "authors": [
+        "Gregg Kellogg",
+        "Pierre-Antoine Champin",
+        "Dave Longley"
+      ],
+      "status": "W3C Recommendation",
+      "publisher": "W3C",
+      "href": "https://www.w3.org/TR/json-ld11/"
+    },
+    "VC-DATA-MODEL": {
+      "title": "Verifiable Credentials Data Model 1.0",
+      "date": "2019-11-19",
+      "authors": [
+        "Manu Sporny",
+        "Grant Noble",
+        "Dave Longley",
+        "Daniel Burnett",
+        "Brent Zundel"
+      ],
+      "status": "W3C Recommendation",
+      "publisher": "W3C",
+      "href": "https://www.w3.org/TR/vc-data-model/"
+    }
+  },
+  "xref": "web-platform",
+  "github": {
+    "repoURL": "https://github.com/w3c/did-cbor-note/",
+    "branch": "main"
+  },
+  "includePermalinks": false,
+  "preProcess": [],
+  "postProcess": [],
+  "editors": [
+    {
+      "name": "Jonathan Holt",
+      "url": "https://github.com/jonnycrunch",
+      "company": "TranSendX",
+      "companyURL": "https://transendx.com/",
+      "w3cid": 3096
+    },
+    {
+      "name": "Manu Sporny",
+      "url": "http://manu.sporny.org/",
+      "company": "Digital Bazaar",
+      "companyURL": "https://digitalbazaar.com/",
+      "w3cid": 41758
+    }
+  ],
+  "authors": [
+    {
+      "name": "Jonathan Holt",
+      "url": "https://github.com/jonnycrunch",
+      "company": "TranSendX",
+      "companyURL": "https://transendx.com/",
+      "w3cid": 3096
+    }
+  ],
+  "publishISODate": "2021-06-29T00:00:00.000Z",
+  "generatedSubtitle": "Working Group Note 29 June 2021"
+}</script>
+<link rel="stylesheet" href="https://www.w3.org/StyleSheets/TR/2016/W3C-NOTE"></head>
+<body data-cite="infra rfc3986 HTML INFRA URL WEBIDL DOM FETCH" class="h-entry"><div class="head">
+    <a class="logo" href="https://www.w3.org/"><img alt="W3C" width="72" height="48" src="https://www.w3.org/StyleSheets/TR/2016/logos/W3C"></a> <h1 id="title" class="title">The Plain CBOR Representation v1.0</h1>
+    <h2 id="subtitle" class="subtitle">Expressing a DID Document using the application/did+cbor media type</h2>
+    <h2>
+      W3C Working Group Note
+      <time class="dt-published" datetime="2021-06-29">29 June 2021</time>
+    </h2>
+    <dl>
+      <dt>This version:</dt><dd>
+              <a class="u-url" href="https://www.w3.org/TR/2021/NOTE-did-representation-cbor-20210629/">https://www.w3.org/TR/2021/NOTE-did-representation-cbor-20210629/</a>
+            </dd><dt>Latest published version:</dt><dd>
+              <a href="https://www.w3.org/TR/did-representation-cbor/">https://www.w3.org/TR/did-representation-cbor/</a>
+            </dd>
+      <dt>Latest editor's draft:</dt><dd><a href="https://w3c.github.io/did-representation-cbor/">https://w3c.github.io/did-representation-cbor/</a></dd>
+      
+      
+      
+      
+      
+      <dt>Editors:</dt>
+      <dd class="editor p-author h-card vcard" data-editor-id="3096">
+    <a class="u-url url p-name fn" href="https://github.com/jonnycrunch">Jonathan Holt</a> (<a class="p-org org h-org" href="https://transendx.com/">TranSendX</a>)
+  </dd><dd class="editor p-author h-card vcard" data-editor-id="41758">
+    <a class="u-url url p-name fn" href="http://manu.sporny.org/">Manu Sporny</a> (<a class="p-org org h-org" href="https://digitalbazaar.com/">Digital Bazaar</a>)
+  </dd>
+      
+      <dt>Author:</dt><dd class="editor p-author h-card vcard" data-editor-id="3096">
+    <a class="u-url url p-name fn" href="https://github.com/jonnycrunch">Jonathan Holt</a> (<a class="p-org org h-org" href="https://transendx.com/">TranSendX</a>)
+  </dd>
+      <dt>Participate:</dt><dd>
+    <a href="https://github.com/w3c/did-cbor-note/">GitHub w3c/did-cbor-note</a>
+  </dd><dd>
+    <a href="https://github.com/w3c/did-cbor-note/issues/">File an issue</a>
+  </dd><dd>
+    <a href="https://github.com/w3c/did-cbor-note/commits/main">Commit history</a>
+  </dd><dd>
+    <a href="https://github.com/w3c/did-cbor-note/pulls/">Pull requests</a>
+  </dd>
+    </dl>
+    
+    
+    
+    <p class="copyright">
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Copyright">Copyright</a>
+    ©
+    2021
+    
+    <a href="https://www.w3.org/"><abbr title="World Wide Web Consortium">W3C</abbr></a><sup>®</sup> (<a href="https://www.csail.mit.edu/"><abbr title="Massachusetts Institute of Technology">MIT</abbr></a>,
+    <a href="https://www.ercim.eu/"><abbr title="European Research Consortium for Informatics and Mathematics">ERCIM</abbr></a>, <a href="https://www.keio.ac.jp/">Keio</a>,
+    <a href="https://ev.buaa.edu.cn/">Beihang</a>). 
+    W3C <a href="https://www.w3.org/Consortium/Legal/ipr-notice#Legal_Disclaimer">liability</a>,
+    <a href="https://www.w3.org/Consortium/Legal/ipr-notice#W3C_Trademarks">trademark</a> and <a rel="license" href="https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document">permissive document license</a> rules
+    apply.
+  </p>
+    <hr title="Separator for header">
+  </div>
+  <section id="abstract" class="introductory"><h2>Abstract</h2>
+
+    <p>
+This document defines the <a href="https://www.w3.org/TR/did-core/#production">production</a>
+and <a href="https://www.w3.org/TR/did-core/#consumption">consumption</a> rules
+for a CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a> for
+DID Documents [<cite><a class="bibref" data-link-type="biblio" href="#bib-did-core" title="Decentralized Identifiers (DIDs) v1.0">DID-CORE</a></cite>].
+    </p>
+
+  </section>
+
+  <section id="sotd" class="introductory"><h2>Status of This Document</h2><p><em>This section describes the status of this
+      document at the time of its publication. Other documents may supersede
+      this document. A list of current <abbr title="World Wide Web Consortium">W3C</abbr> publications and the latest revision
+      of this technical report can be found in the
+      <a href="https://www.w3.org/TR/"><abbr title="World Wide Web Consortium">W3C</abbr> technical reports index</a> at
+      https://www.w3.org/TR/.</em></p>
+
+    <p>
+The <abbr title="World Wide Web Consortium">W3C</abbr> Decentralized Identifier Working Group has published this document as a
+<abbr title="World Wide Web Consortium">W3C</abbr> NOTE and is requesting that software developers provide experimental
+implementations designed to test the implementability of all of the features in
+this document.
+    </p>
+
+    <div class="note" role="note" id="issue-container-generatedID"><div role="heading" class="note-title marker" id="h-note" aria-level="3"><span>Note</span><span class="issue-label">: Debate related to purpose of format</span></div><p class="">
+The <abbr title="World Wide Web Consortium">W3C</abbr> Decentralized Identifier Working Group attempted to normatively define
+the content in this document in the [<cite><a class="bibref" data-link-type="biblio" href="#bib-did-core" title="Decentralized Identifiers (DIDs) v1.0">DID-CORE</a></cite>] specification. A lack of
+implementations and tests resulted in the removal of the
+<code>application/did+cbor</code> representation from [<cite><a class="bibref" data-link-type="biblio" href="#bib-did-core" title="Decentralized Identifiers (DIDs) v1.0">DID-CORE</a></cite>] and the
+publication of that content in this document. There remains an  <a href="https://github.com/w3c/did-cbor-note/issues/4">unresolved debate</a>
+related to whether or not this representation is appropriate for broad
+implementation. Other, more compact CBOR representations that take advantage of
+the compactness of data format might be a better fit for a variety of use cases.
+    </p></div>
+
+    <p>
+Comments regarding this document are welcome. Please file issues
+directly on <a href="https://github.com/w3c/did-cbor-note/issues/">GitHub</a>,
+or send them
+to <a href="mailto:public-did-wg@w3.org">public-did-wg@w3.org</a> (
+<a href="mailto:public-did-wg-request@w3.org?subject=subscribe">subscribe</a>,
+<a href="https://lists.w3.org/Archives/Public/public-did-wg/">archives</a>).
+    </p>
+
+  <p>
+    This document was published by the <a href="https://www.w3.org/2019/did-wg/">Decentralized Identifier Working Group</a> as a
+    Working Group Note. 
+    
+  </p><p>
+    <a href="https://github.com/w3c/did-cbor-note/issues/">GitHub Issues</a> are preferred for
+          discussion of this specification.
+        
+    Alternatively, you can send comments to our mailing list.
+          Please send them to
+          <a href="mailto:public-did-wg@w3.org">public-did-wg@w3.org</a>
+          (<a href="mailto:public-did-wg-request@w3.org?subject=subscribe">subscribe</a>,
+          <a href="https://lists.w3.org/Archives/Public/public-did-wg/">archives</a>).
+        
+  </p><p>
+      Publication as a Working Group Note does not imply endorsement
+      by the <abbr title="World Wide Web Consortium">W3C</abbr> Membership. 
+    </p><p>This is a draft document and may be updated, replaced
+  or obsoleted by other documents at any time. It is inappropriate to cite this
+  document as other than work in progress.
+  </p><p></p><p>
+    
+        This document was produced by a group
+        operating under the
+        <a href="https://www.w3.org/Consortium/Patent-Policy/"><abbr title="World Wide Web Consortium">W3C</abbr> Patent
+          Policy</a>.
+       
+    
+                <abbr title="World Wide Web Consortium">W3C</abbr> maintains a
+                <a rel="disclosure" href="https://www.w3.org/groups/wg/did/ipr">public list of any patent disclosures</a>
+          made in connection with the deliverables of
+          the group; that page also includes
+          instructions for disclosing a patent. An individual who has actual
+          knowledge of a patent which the individual believes contains
+          <a href="https://www.w3.org/Consortium/Patent-Policy/#def-essential">Essential Claim(s)</a>
+          must disclose the information in accordance with
+          <a href="https://www.w3.org/Consortium/Patent-Policy/#sec-Disclosure">section 6 of the <abbr title="World Wide Web Consortium">W3C</abbr> Patent Policy</a>.
+        
+    
+  </p><p>
+                  This document is governed by the
+                  <a id="w3c_process_revision" href="https://www.w3.org/2020/Process-20200915/">15 September 2020 <abbr title="World Wide Web Consortium">W3C</abbr> Process Document</a>.
+                </p></section><nav id="toc"><h2 class="introductory" id="table-of-contents">Table of Contents</h2><ol class="toc"><li class="tocline"><a class="tocxref" href="#introduction"><bdi class="secno">1. </bdi>Introduction</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#conformance"><bdi class="secno">1.1 </bdi>Conformance</a></li></ol></li><li class="tocline"><a class="tocxref" href="#the-plain-cbor-representation"><bdi class="secno">2. </bdi>The Plain CBOR Representation</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#production"><bdi class="secno">2.1 </bdi>Production</a></li><li class="tocline"><a class="tocxref" href="#consumption"><bdi class="secno">2.2 </bdi>Consumption</a></li></ol></li><li class="tocline"><a class="tocxref" href="#iana-considerations"><bdi class="secno">A. </bdi>IANA Considerations</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#application-did-cbor"><bdi class="secno">A.1 </bdi>application/did+cbor</a></li></ol></li><li class="tocline"><a class="tocxref" href="#references"><bdi class="secno">B. </bdi>References</a><ol class="toc"><li class="tocline"><a class="tocxref" href="#normative-references"><bdi class="secno">B.1 </bdi>Normative references</a></li></ol></li></ol></nav>
+
+  <section class="informative" id="introduction">
+    <h2 id="x1-introduction"><bdi class="secno">1. </bdi>Introduction<a class="self-link" aria-label="§" href="#introduction"></a></h2><p><em>This section is non-normative.</em></p>
+
+    <p>
+The Decentralized Identifier specification [<cite><a class="bibref" data-link-type="biblio" href="#bib-did-core" title="Decentralized Identifiers (DIDs) v1.0">DID-CORE</a></cite>] defines a data model
+that can be expressed in a variety of representation formats. This document
+specifies the production rules for converting the DID document data model to a
+plain CBOR representation as well as the consumption rules for taking a plain
+CBOR  DID document representation and converting that back into the DID document
+data model.
+    </p>
+
+    <p>
+Readers are advised to familiarize themselves with the Decentralized Identifier
+specification [<cite><a class="bibref" data-link-type="biblio" href="#bib-did-core" title="Decentralized Identifiers (DIDs) v1.0">DID-CORE</a></cite>] before reading the rest of the content in this
+document.
+    </p>
+
+    <section id="conformance"><h3 id="x1-1-conformance"><bdi class="secno">1.1 </bdi>Conformance<a class="self-link" aria-label="§" href="#conformance"></a></h3><p>As well as sections marked as non-normative, all authoring guidelines, diagrams, examples, and notes in this specification are non-normative. Everything else in this specification is normative.</p><p>
+        The key words <em class="rfc2119">MAY</em> and <em class="rfc2119">MUST</em> in this document
+        are to be interpreted as described in
+        <a href="https://datatracker.ietf.org/doc/html/bcp14">BCP 14</a>
+        [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">RFC2119</a></cite>] [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc8174" title="Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words">RFC8174</a></cite>]
+        when, and only when, they appear in all capitals, as shown here.
+      </p></section>
+  </section>
+
+
+
+  <section id="the-plain-cbor-representation">
+      <h2 id="x2-the-plain-cbor-representation"><bdi class="secno">2. </bdi>The Plain CBOR Representation<a class="self-link" aria-label="§" href="#the-plain-cbor-representation"></a></h2>
+
+      <p>
+This section defines the <a href="https://www.w3.org/TR/did-core/#production">production</a>
+and <a href="https://www.w3.org/TR/did-core/#consumption">consumption</a> rules
+for a CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a> for DID Documents.
+      </p>
+
+      <section id="production">
+        <h3 id="x2-1-production"><bdi class="secno">2.1 </bdi>Production<a class="self-link" aria-label="§" href="#production"></a></h3>
+
+        <p>
+The <a href="https://www.w3.org/TR/did-core/#dfn-did-document">DID document</a>, DID document data structures, and
+representation-specific entries <a href="https://infra.spec.whatwg.org/#maps">map</a> <em class="rfc2119">MUST</em> be
+serialized to the CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a> according to the following
+<a href="https://www.w3.org/TR/did-core/#production">production</a> rules:
+        </p>
+
+        <table class="simple" id="cbor-representation-production">
+          <thead>
+            <tr>
+              <th>
+Data&nbsp;Type
+              </th>
+              <th>
+CBOR Representation Type
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#maps">map</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR map</a> (major type 5), where each
+entry is represented as a member of the CBOR map. The entry key is expressed
+as a <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR string</a> (major type 3) as the
+key, and the entry value according to its type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#list">list</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> (major type 4), where each
+element of the list is added, in order, as a value of the array according to its
+type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#ordered-set">set</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> (major type 4), where each
+element of the list is added, in order, as a value of the array according to its
+type, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://www.w3.org/TR/did-core/#dfn-datetime">datetime</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR string</a> (major type 3) formatted as
+an <a href="https://www.w3.org/TR/xmlschema11-2/#dateTime">XML Datetime</a> normalized to
+UTC 00:00 and without sub-second decimal precision. For example:
+<code>2020-12-20T19:17:47Z</code>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#string">string</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR string</a> (major type 3).
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://www.w3.org/TR/did-core/#integer">integer</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR integer</a> (major type 0 or 1),
+choosing the shortest byte representation.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://www.w3.org/TR/did-core/#double">double</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR floating-point number</a> (major type
+7). All floating point values <em class="rfc2119">MUST</em> be encoded as 64-bits (additional type
+value 27), even for integral values.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#boolean">boolean</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 21 (true) or 20 (false).
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://infra.spec.whatwg.org/#null">null</a>
+              </td>
+              <td>
+A <a href="https://tools.ietf.org/html/rfc8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 22 (null).
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In addition to the data type production rules above, the following rules apply
+for <a href="https://www.w3.org/TR/did-core/#dfn-conforming-producer">conforming producers</a> that
+serialize CBOR <a href="https://www.w3.org/TR/did-core/#representations">representations</a>:
+        </p>
+        <ol>
+          <li>
+Indefinite-length items are not allowed and <em class="rfc2119">MUST</em> be made a <a href="https://tools.ietf.org/html/rfc8949#section-3.2.2">CBOR definite length.</a>
+          </li>
+          <li>
+All CBOR tags <em class="rfc2119">MUST</em> be retained regardless of whether they are optional.
+          </li>
+          <li>
+All four <a href="https://tools.ietf.org/html/rfc8949#section-4.2.1">Canonical CBOR rules</a>
+listed in [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc8949" title="Concise Binary Object Representation (CBOR)">RFC8949</a></cite>] <em class="rfc2119">MUST</em> be applied to all relevant data types.
+          </li>
+        </ol>
+
+        <p>
+All entries of a <a href="https://www.w3.org/TR/did-core/#dfn-did-document">DID document</a> <em class="rfc2119">MUST</em>
+be included in the root <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR map</a> (major
+type 5). Entries <em class="rfc2119">MAY</em> contain additional data substructures subject to the value
+representation rules in the list above. When serializing a <a href="https://www.w3.org/TR/did-core/#dfn-did-document">DID document</a> to its CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a>, a <a href="https://www.w3.org/TR/did-core/#dfn-conforming-producer">conforming producer</a> <em class="rfc2119">MUST</em>
+specify a media type of <code>application/did+cbor</code> to downstream
+applications such as described in the section on <a href="https://www.w3.org/TR/did-core/#did-resolution-metadata">DID Resolution Metadata</a>.
+        </p>
+
+        <p>
+The following examples express the CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a> of a <a href="https://www.w3.org/TR/did-core/#dfn-did-documents">DID document</a> in hexidecimal notation,
+and in CBOR diagnostic notation:
+        </p>
+
+      <div class="example" id="example-1-did-document-encoded-as-cbor-hexadecimal">
+        <div class="marker">
+    <a class="self-link" href="#example-1-did-document-encoded-as-cbor-hexadecimal">Example<bdi> 1</bdi></a><span class="example-title">: DID Document encoded as CBOR (hexadecimal)</span>
+  </div> <pre class="nohighlight">A2626964781E6469643A6578616D706C653A313233343536373839616263
+6465666768696E61757468656E7469636174696F6E81A462696478256469
+643A6578616D706C653A313233343536373839616263646566676869236B
+6579732D316474797065781A45643235353139566572696669636174696F
+6E4B6579323031386A636F6E74726F6C6C6572781E6469643A6578616D70
+6C653A3132333435363738396162636465666768696F7075626C69634B65
+79426173653538782C483343324156764C4D7636676D4D4E616D33755641
+6A5A70666B634A437744776E5A6E367A3377586D715056</pre>
+      </div>
+
+      <div class="example" id="example-2-did-document-encoded-as-cbor-diagnostic-notation">
+        <div class="marker">
+    <a class="self-link" href="#example-2-did-document-encoded-as-cbor-diagnostic-notation">Example<bdi> 2</bdi></a><span class="example-title">: DID Document encoded as CBOR (diagnostic notation)</span>
+  </div> <pre style="font-size: 50%" class="nohighlight">A2                                   # map(2)
+62                                   # text(2)
+   6964                              # "id"
+78 1E                                # text(30)
+   6469643A6578616D706C653A313233343536373839616263646566676869 # "did:example:123456789abcdefghi"
+6E                                   # text(14)
+   61757468656E7469636174696F6E      # "authentication"
+81                                   # array(1)
+   A4                                # map(4)
+      62                             # text(2)
+         6964                        # "id"
+      78 25                          # text(37)
+         6469643A6578616D706C653A313233343536373839616263646566676869236B6579732D31 # "did:example:123456789abcdefghi#keys-1"
+      64                             # text(4)
+         74797065                    # "type"
+      78 1A                          # text(26)
+         45643235353139566572696669636174696F6E4B657932303138 # "Ed25519VerificationKey2020"
+      6A                             # text(10)
+         636F6E74726F6C6C6572        # "controller"
+      78 1E                          # text(30)
+         6469643A6578616D706C653A313233343536373839616263646566676869 # "did:example:123456789abcdefghi"
+      6F                             # text(15)
+         7075626C69634B6579426173653538 # "publicKeyMultibase"
+      78 2C                          # text(44)
+         483343324156764C4D7636676D4D4E616D337556416A5A70666B634A437744776E5A6E367A3377586D715056 # "zH3C2AVvLMv6gmMNam3uVAjZpfkcJCwDwnZn6z3wXmqPV"</pre>
+      </div>
+
+      </section>
+
+      <section id="consumption">
+        <h3 id="x2-2-consumption"><bdi class="secno">2.2 </bdi>Consumption<a class="self-link" aria-label="§" href="#consumption"></a></h3>
+
+        <p>
+The <a href="https://www.w3.org/TR/did-core/#DID-document">DID document</a> and any DID document
+data structures expressed by the <a href="https://www.w3.org/TR/did-core/#data-model">data
+model</a> <em class="rfc2119">MUST</em> be deserialized into the <a href="https://www.w3.org/TR/did-core/#data-model">data
+model</a> according to the following <a href="https://www.w3.org/TR/did-core/#consumption">consumption</a> rules:
+        </p>
+
+        <table class="simple column-width-50" id="cbor-representation-consumption">
+          <thead>
+            <tr>
+              <th>
+CBOR Representation Type
+              </th>
+              <th>
+Data&nbsp;Type
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR map</a> (major type 5)
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#maps">map</a>, where each data item of the
+CBOR map is added as an entry to the map with the entry key being the
+data item name and the value converted based on the CBOR type and, if available,
+entry definition, as defined here; as no order can be enforced for general CBOR
+maps, no insertion order is guaranteed.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> (major type 4), where the <a href="https://www.w3.org/TR/did-core/#data-model">data model</a> entry value is a <a href="https://infra.spec.whatwg.org/#list">list</a> or unknown
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#list">list</a>, where each value of the <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> is added to the list in order,
+converted based on the CBOR type of the array value, as defined in this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> (major type 4), where the <a href="https://www.w3.org/TR/did-core/#data-model">data model</a> entry value is a <a href="https://infra.spec.whatwg.org/#ordered-set">set</a>
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#ordered-set">set</a>, where each value of
+the <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR array</a> is added to the
+set in order, converted based on the CBOR type of the array value as defined in
+this table.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR string</a> (major type 3) where the <a href="https://www.w3.org/TR/did-core/#data-model">data model</a> entry value is a <a href="https://www.w3.org/TR/did-core/#dfn-datetime">datetime</a>
+              </td>
+              <td>
+A <a href="https://www.w3.org/TR/did-core/#dfn-datetime">datetime</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR string</a> (major type 3), where the <a href="https://www.w3.org/TR/did-core/#data-model">data model</a> entry value type is <a href="https://infra.spec.whatwg.org/#string">string</a> or unknown.
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#string">string</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR integer</a> (major type 0 or 1),
+choosing the shortest byte representation
+              </td>
+              <td>
+An <a href="https://www.w3.org/TR/did-core/#dfn-integer">integer</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR floating-point number</a> (major type
+7)
+              </td>
+              <td>
+A <a href="https://www.w3.org/TR/did-core/#dfn-double">double</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 21 (True) or 20 (False)
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#boolean">boolean</a>.
+              </td>
+            </tr>
+            <tr>
+              <td>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.3">CBOR simple value</a> (major type 7,
+subtype 24) with a simple value of 22 (Null)
+              </td>
+              <td>
+A <a href="https://infra.spec.whatwg.org/#null">null</a> value.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In addition to the data type consumption rules above, the following rules apply
+for <a href="https://www.w3.org/TR/did-core/#dfn-conforming-consumer">conforming consumers</a> that
+deserialize CBOR <a href="https://www.w3.org/TR/did-core/#dfn-conforming-consumer">conforming
+consumers</a>  that deserialize CBOR <a href="https://www.w3.org/TR/did-core/#representations">representations</a>:
+        </p>
+
+        <ol>
+          <li>
+<a href="https://tools.ietf.org/html/rfc8949#section-3.2.2">CBOR
+indefinite-length items</a> are not allowed and <em class="rfc2119">MUST</em> produce an error.
+          </li>
+          <li>
+A duplicate key in the same CBOR map <em class="rfc2119">MUST</em> produce an error.
+          </li>
+          <li>
+All CBOR tags <em class="rfc2119">MUST</em> be retained for CBOR <a href="https://www.w3.org/TR/did-core/#production">production</a> regardless of whether they are
+optional.
+          </li>
+        </ol>
+
+        <p>
+If media type information is available to a <a href="https://www.w3.org/TR/did-core/#dfn-conforming-consumer">conforming consumer</a> and the media
+type value is <code>application/did+cbor</code>, then the data structure being
+consumed is a <a href="https://www.w3.org/TR/did-core/#did-document">DID document</a>, and the
+root element <em class="rfc2119">MUST</em> be a <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR map</a> (major
+type 5) where all members of the object are entries of the <a href="https://www.w3.org/TR/did-core/#did-document">DID document</a>. A <a href="https://www.w3.org/TR/did-core/#did-document">DID document</a>. A <a href="https://www.w3.org/TR/did-core/#dfn-conforming-consumer">conforming consumer</a> for a CBOR <a href="https://www.w3.org/TR/did-core/#representations">representation</a> that is consuming a <a href="https://www.w3.org/TR/did-core/#representations">representation</a> that is consuming a <a href="https://www.w3.org/TR/did-core/#did-document">DID document</a> with a root element that is
+not a <a href="https://tools.ietf.org/html/rfc8949#section-3.1">CBOR map</a> (major type 5) <em class="rfc2119">MUST</em> report
+an error.
+        </p>
+
+
+      </section>
+    </section>
+  
+
+  <section class="appendix" id="iana-considerations">
+    <h2 id="a-iana-considerations"><bdi class="secno">A. </bdi>IANA Considerations<a class="self-link" aria-label="§" href="#iana-considerations"></a></h2>
+
+    <p>
+This section will be submitted to the Internet Engineering Steering Group
+(IESG) for review, approval, and registration with IANA when this specification
+becomes a <abbr title="World Wide Web Consortium">W3C</abbr> Proposed Recommendation.
+    </p>
+
+    <section id="application-did-cbor">
+      <h3 id="a-1-application-did-cbor"><bdi class="secno">A.1 </bdi>application/did+cbor<a class="self-link" aria-label="§" href="#application-did-cbor"></a></h3>
+      <dl>
+        <dt>Type name:</dt>
+        <dd>application</dd>
+        <dt>Subtype name:</dt>
+        <dd>did+cbor</dd>
+        <dt>Required parameters:</dt>
+        <dd>None</dd>
+        <dt>Optional parameters:</dt>
+        <dd>None</dd>
+        <dt>Encoding considerations:</dt>
+        <dd>
+See <a href="https://tools.ietf.org/html/rfc8949#section-4.2.1">RFC&nbsp;8949, section 4.2.1</a>.
+        </dd>
+        <dt>Security considerations:</dt>
+        <dd>
+See <a href="https://tools.ietf.org/html/rfc8949#section-10">RFC&nbsp;8949, section 10</a> [<cite><a class="bibref" data-link-type="biblio" href="#bib-rfc8949" title="Concise Binary Object Representation (CBOR)">RFC8949</a></cite>].
+        </dd>
+        <dt>Interoperability considerations:</dt>
+        <dd>Not Applicable</dd>
+        <dt>Published specification:</dt>
+        <dd>http://www.w3.org/TR/did-core/</dd>
+        <dt>Applications that use this media type:</dt>
+        <dd>
+Any application that requires an identifier that is decentralized, persistent,
+cryptographically verifiable, and resolvable. Applications typically consist of
+cryptographic identity systems, decentralized networks of devices, and
+websites that issue or verify <abbr title="World Wide Web Consortium">W3C</abbr> Verifiable Credentials.
+        </dd>
+        <dt>Additional information:</dt>
+        <dd>
+          <dl>
+            <dt>Magic number(s):</dt>
+            <dd>Not Applicable</dd>
+            <dt>File extension(s):</dt>
+            <dd>.didcbor</dd>
+            <dt>Macintosh file type code(s):</dt>
+            <dd>TEXT</dd>
+          </dl>
+        </dd>
+        <dt>Person &amp; email address to contact for further information:</dt>
+        <dd>Ivan Herman &lt;ivan@w3.org&gt;</dd>
+        <dt>Intended usage:</dt>
+        <dd>Common</dd>
+        <dt>Restrictions on usage:</dt>
+        <dd>None</dd>
+        <dt>Author(s):</dt>
+        <dd>Drummond Reed, Manu Sporny, Markus Sabadello, Dave Longley, Christopher Allen</dd>
+        <dt>Change controller:</dt>
+        <dd><abbr title="World Wide Web Consortium">W3C</abbr></dd>
+      </dl>
+
+       <p>
+Fragment identifiers used with
+<a href="https://www.w3.org/TR/did-core/#application-did-cbor">application/did+cbor</a> are treated
+according to the rules defined in <a href="https://www.w3.org/TR/did-core/#fragment">Decentralized Identifiers (DIDs) v1.0</a>.
+      </p>
+    </section>
+
+  </section>
+
+
+
+<section id="references" class="appendix"><h2 id="b-references"><bdi class="secno">B. </bdi>References<a class="self-link" aria-label="§" href="#references"></a></h2><section id="normative-references">
+    <h3 id="b-1-normative-references"><bdi class="secno">B.1 </bdi>Normative references<a class="self-link" aria-label="§" href="#normative-references"></a></h3>
+    <dl class="bibliography"><dt id="bib-did-core">[DID-CORE]</dt><dd><a href="https://www.w3.org/TR/did-core/"><cite>Decentralized Identifiers (DIDs) v1.0</cite></a>. Drummond Reed; Manu Sporny; Markus Sabadello; Dave Longley; Christopher Allen.  W3C. 15 May 2021. W3C Candidate Recommendation. URL: <a href="https://www.w3.org/TR/did-core/">https://www.w3.org/TR/did-core/</a></dd><dt id="bib-infra">[INFRA]</dt><dd><a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Anne van Kesteren; Domenic Denicola.  WHATWG. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a></dd><dt id="bib-rfc2119">[RFC2119]</dt><dd><a href="https://tools.ietf.org/html/rfc2119"><cite>Key words for use in RFCs to Indicate Requirement Levels</cite></a>. S. Bradner.  IETF. March 1997. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc2119">https://tools.ietf.org/html/rfc2119</a></dd><dt id="bib-rfc8174">[RFC8174]</dt><dd><a href="https://tools.ietf.org/html/rfc8174"><cite>Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words</cite></a>. B. Leiba.  IETF. May 2017. Best Current Practice. URL: <a href="https://tools.ietf.org/html/rfc8174">https://tools.ietf.org/html/rfc8174</a></dd><dt id="bib-rfc8949">[RFC8949]</dt><dd><a href="https://tools.ietf.org/html/rfc8949"><cite>Concise Binary Object Representation (CBOR)</cite></a>. C. Bormann; P. Hoffman.  IETF. December 2020. Internet Standard. URL: <a href="https://tools.ietf.org/html/rfc8949">https://tools.ietf.org/html/rfc8949</a></dd><dt id="bib-xmlschema11-2">[XMLSCHEMA11-2]</dt><dd><a href="https://www.w3.org/TR/xmlschema11-2/"><cite>W3C XML Schema Definition Language (XSD) 1.1 Part 2: Datatypes</cite></a>. David Peterson; Sandy Gao; Ashok Malhotra; Michael Sperberg-McQueen; Henry Thompson; Paul V. Biron et al.  W3C. 5 April 2012. W3C Recommendation. URL: <a href="https://www.w3.org/TR/xmlschema11-2/">https://www.w3.org/TR/xmlschema11-2/</a></dd></dl>
+  </section></section><p role="navigation" id="back-to-top">
+    <a href="#title"><abbr title="Back to Top">↑</abbr></a>
+  </p><script id="respec-dfn-panel">(() => {
+// @ts-check
+if (document.respec) {
+  document.respec.ready.then(setupPanel);
+} else {
+  setupPanel();
+}
+
+function setupPanel() {
+  const listener = panelListener();
+  document.body.addEventListener("keydown", listener);
+  document.body.addEventListener("click", listener);
+}
+
+function panelListener() {
+  /** @type {HTMLElement} */
+  let panel = null;
+  return event => {
+    const { target, type } = event;
+
+    if (!(target instanceof HTMLElement)) return;
+
+    // For keys, we only care about Enter key to activate the panel
+    // otherwise it's activated via a click.
+    if (type === "keydown" && event.key !== "Enter") return;
+
+    const action = deriveAction(event);
+
+    switch (action) {
+      case "show": {
+        hidePanel(panel);
+        /** @type {HTMLElement} */
+        const dfn = target.closest("dfn, .index-term");
+        panel = document.getElementById(`dfn-panel-for-${dfn.id}`);
+        const coords = deriveCoordinates(event);
+        displayPanel(dfn, panel, coords);
+        break;
+      }
+      case "dock": {
+        panel.style.left = null;
+        panel.style.top = null;
+        panel.classList.add("docked");
+        break;
+      }
+      case "hide": {
+        hidePanel(panel);
+        panel = null;
+        break;
+      }
+    }
+  };
+}
+
+/**
+ * @param {MouseEvent|KeyboardEvent} event
+ */
+function deriveCoordinates(event) {
+  const target = /** @type HTMLElement */ (event.target);
+
+  // We prevent synthetic AT clicks from putting
+  // the dialog in a weird place. The AT events sometimes
+  // lack coordinates, so they have clientX/Y = 0
+  const rect = target.getBoundingClientRect();
+  if (
+    event instanceof MouseEvent &&
+    event.clientX >= rect.left &&
+    event.clientY >= rect.top
+  ) {
+    // The event probably happened inside the bounding rect...
+    return { x: event.clientX, y: event.clientY };
+  }
+
+  // Offset to the middle of the element
+  const x = rect.x + rect.width / 2;
+  // Placed at the bottom of the element
+  const y = rect.y + rect.height;
+  return { x, y };
+}
+
+/**
+ * @param {Event} event
+ */
+function deriveAction(event) {
+  const target = /** @type {HTMLElement} */ (event.target);
+  const hitALink = !!target.closest("a");
+  if (target.closest("dfn:not([data-cite]), .index-term")) {
+    return hitALink ? "none" : "show";
+  }
+  if (target.closest(".dfn-panel")) {
+    if (hitALink) {
+      return target.classList.contains("self-link") ? "hide" : "dock";
+    }
+    const panel = target.closest(".dfn-panel");
+    return panel.classList.contains("docked") ? "hide" : "none";
+  }
+  if (document.querySelector(".dfn-panel:not([hidden])")) {
+    return "hide";
+  }
+  return "none";
+}
+
+/**
+ * @param {HTMLElement} dfn
+ * @param {HTMLElement} panel
+ * @param {{ x: number, y: number }} clickPosition
+ */
+function displayPanel(dfn, panel, { x, y }) {
+  panel.hidden = false;
+  // distance (px) between edge of panel and the pointing triangle (caret)
+  const MARGIN = 20;
+
+  const dfnRects = dfn.getClientRects();
+  // Find the `top` offset when the `dfn` can be spread across multiple lines
+  let closestTop = 0;
+  let minDiff = Infinity;
+  for (const rect of dfnRects) {
+    const { top, bottom } = rect;
+    const diffFromClickY = Math.abs((top + bottom) / 2 - y);
+    if (diffFromClickY < minDiff) {
+      minDiff = diffFromClickY;
+      closestTop = top;
+    }
+  }
+
+  const top = window.scrollY + closestTop + dfnRects[0].height;
+  const left = x - MARGIN;
+  panel.style.left = `${left}px`;
+  panel.style.top = `${top}px`;
+
+  // Find if the panel is flowing out of the window
+  const panelRect = panel.getBoundingClientRect();
+  const SCREEN_WIDTH = Math.min(window.innerWidth, window.screen.width);
+  if (panelRect.right > SCREEN_WIDTH) {
+    const newLeft = Math.max(MARGIN, x + MARGIN - panelRect.width);
+    const newCaretOffset = left - newLeft;
+    panel.style.left = `${newLeft}px`;
+    /** @type {HTMLElement} */
+    const caret = panel.querySelector(".caret");
+    caret.style.left = `${newCaretOffset}px`;
+  }
+
+  // As it's a dialog, we trap focus.
+  // TODO: when <dialog> becomes a implemented, we should really
+  // use that.
+  trapFocus(panel, dfn);
+}
+
+/**
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function trapFocus(panel, dfn) {
+  /** @type NodeListOf<HTMLAnchorElement> elements */
+  const anchors = panel.querySelectorAll("a[href]");
+  // No need to trap focus
+  if (!anchors.length) return;
+
+  // Move focus to first anchor element
+  const first = anchors.item(0);
+  first.focus();
+
+  const trapListener = createTrapListener(anchors, panel, dfn);
+  panel.addEventListener("keydown", trapListener);
+
+  // Hiding the panel releases the trap
+  const mo = new MutationObserver(records => {
+    const [record] = records;
+    const target = /** @type HTMLElement */ (record.target);
+    if (target.hidden) {
+      panel.removeEventListener("keydown", trapListener);
+      mo.disconnect();
+    }
+  });
+  mo.observe(panel, { attributes: true, attributeFilter: ["hidden"] });
+}
+
+/**
+ *
+ * @param {NodeListOf<HTMLAnchorElement>} anchors
+ * @param {HTMLElement} panel
+ * @param {HTMLElement} dfn
+ * @returns
+ */
+function createTrapListener(anchors, panel, dfn) {
+  const lastIndex = anchors.length - 1;
+  let currentIndex = 0;
+  return event => {
+    switch (event.key) {
+      // Hitting "Tab" traps us in a nice loop around elements.
+      case "Tab": {
+        event.preventDefault();
+        currentIndex += event.shiftKey ? -1 : +1;
+        if (currentIndex < 0) {
+          currentIndex = lastIndex;
+        } else if (currentIndex > lastIndex) {
+          currentIndex = 0;
+        }
+        anchors.item(currentIndex).focus();
+        break;
+      }
+
+      // Hitting "Enter" on an anchor releases the trap.
+      case "Enter":
+        hidePanel(panel);
+        break;
+
+      // Hitting "Escape" returns focus to dfn.
+      case "Escape":
+        hidePanel(panel);
+        dfn.focus();
+        return;
+    }
+  };
+}
+
+/** @param {HTMLElement} panel */
+function hidePanel(panel) {
+  if (!panel) return;
+  panel.hidden = true;
+  panel.classList.remove("docked");
+}
+})()</script><script src="https://www.w3.org/scripts/TR/2016/fixup.js"></script></body></html>
