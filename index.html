@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>The did+cbor DID Document Representation v1.0</title>
+  <title>The Plain CBOR Representation v1.0</title>
   <meta content='text/html; charset=utf-8' http-equiv='Content-Type'>
   <!--
     === NOTA BENE ===
@@ -40,7 +40,8 @@
     edDraftURI: "https://w3c.github.io/did-representation-cbor/",
 
     // subtitle for the spec
-    subtitle: "Expressing a DID Document using the application/did+cbor media type",
+    subtitle:
+      "Expressing a DID Document using the application/did+cbor media type",
 
     // if you wish the publication date to be other than today, set this
     //publishDate:  "2019-11-07",
@@ -124,7 +125,7 @@
     <p>
 This document defines the <a data-cite="DID-CORE#production">production</a>
 and <a data-cite="DID-CORE#consumption">consumption</a> rules
-for a CBOR <a data-cite="DID-CORE#representation">representation</a> for
+for a CBOR <a data-cite="DID-CORE#representations">representation</a> for
 DID Documents [[DID-CORE]].
     </p>
 
@@ -139,6 +140,18 @@ implementations designed to test the implementability of all of the features in
 this document.
     </p>
 
+    <p class="issue" title="Debate related to purpose of format" data-number="4">
+The W3C Decentralized Identifier Working Group attempted to normatively
+define the content in this document in the [[DID-CORE]] specification. A lack
+of implementations and tests resulted in the removal of the
+<code>application/did+cbor</code> representation from [[DID-CORE]] and the
+publication of that content in this document. There remains an unresolved
+debate related to whether or not this representation is appropriate for
+implementation.  Other, more compact CBOR representations that take
+advantage of the compactness of data format might be a better fit for a
+variety of use cases.
+    </p>
+
     <p>
 Comments regarding this document are welcome. Please file issues
 directly on <a href="https://github.com/w3c/did-core/issues/">GitHub</a>,
@@ -150,9 +163,22 @@ to <a href="mailto:public-did-wg@w3.org">public-did-wg@w3.org</a> (
 
   </section>
 
-  <section class="notoc" id='conformance'></section>
+  <section class="informative">
+    <h2>Introduction</h2>
 
-  <section class="notoc">
+    <p>
+The Decentralized Identifier specification [[DID-CORE]] defines a data model
+that can be expressed in a variety of representation formats. This document
+specifies the production rules for converting the DID document data model to a
+plain CBOR representation as well as the consumption rules for taking a plain
+CBOR  DID document representation and converting that back into the DID document
+data model.
+    </p>
+
+    <section id='conformance'></section>
+  </section>
+
+  <section class="notoc informative">
     <h2>Terminology</h2>
 
     <div data-include="terms.html">
@@ -170,21 +196,21 @@ data-cite="INFRA#maps">map</a>, it is linked directly to that specification.
   </section>
 
   <section>
-      <h2>The application/did+cbor Representation</h2>
+      <h2>The Plain CBOR Representation</h2>
 
       <p>
 This section defines the <a data-cite="DID-CORE#production">production</a>
 and <a data-cite="DID-CORE#consumption">consumption</a> rules
-for a CBOR <a data-cite="DID-CORE#representation">representation</a> for DID Documents.
+for a CBOR <a data-cite="DID-CORE#representations">representation</a> for DID Documents.
       </p>
 
       <section>
-        <h3>CBOR Production</h3>
+        <h3>Production</h3>
 
         <p>
-The <a data-cite="DID-CORE#DID document">DID document</a>, DID document data structures, and
+The <a data-cite="DID-CORE#dfn-did-document">DID document</a>, DID document data structures, and
 representation-specific entries <a data-cite="INFRA#maps">map</a> MUST be
-serialized to the CBOR <a data-cite="DID-CORE#representation">representation</a> according to the following
+serialized to the CBOR <a data-cite="DID-CORE#representations">representation</a> according to the following
 <a data-cite="DID-CORE#production">production</a> rules:
         </p>
 
@@ -234,7 +260,7 @@ type, as defined in this table.
             </tr>
             <tr>
               <td>
-<a data-cite="DID-CORE#datetime">datetime</a>
+<a data-cite="DID-CORE#dfn-datetime">datetime</a>
               </td>
               <td>
 A <a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) formatted as
@@ -293,7 +319,8 @@ subtype 24) with a simple value of 22 (null).
 
         <p>
 In addition to the data type production rules above, the following rules apply
-for <a data-cite="DID-CORE#conforming producers</a> that serialize CBOR <a data-cite="DID-CORE#">representations">conforming producers</a> that serialize CBOR <a data-cite="DID-CORE#">representations</a>:
+for <a data-cite="DID-CORE#dfn-conforming-producer">conforming producers</a> that
+serialize CBOR <a data-cite="DID-CORE#representations">representations</a>:
         </p>
         <ol>
           <li>
@@ -310,18 +337,23 @@ listed in [[RFC8949]] MUST be applied to all relevant data types.
         </ol>
 
         <p>
-All entries of a <a data-cite="DID-CORE#DID document">DID document</a> MUST be included in the root <a
-data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5). Entries MAY contain
-additional data substructures subject to the value representation rules in the
-list above. When serializing a <a data-cite="DID-CORE#DID document">DID document</a> to its CBOR
-<a data-cite="DID-CORE#representation</a>, a <a data-cite="DID-CORE#">conforming producer">representation</a>, a <a data-cite="DID-CORE#">conforming producer</a> MUST specify a media type of
-<code>application/did+cbor</code> to downstream applications such as described
-in <a data-cite="DID-CORE#did-resolution-metadata"></a>.
+All entries of a <a data-cite="DID-CORE#dfn-did-document">DID document</a> MUST
+be included in the root <a data-cite="RFC8949#section-3.1">CBOR map</a> (major
+type 5). Entries MAY contain additional data substructures subject to the value
+representation rules in the list above. When serializing a <a
+data-cite="DID-CORE#dfn-did-document">DID document</a> to its CBOR <a
+data-cite="DID-CORE#representations">representation</a>, a <a
+data-cite="DID-CORE#dfn-conforming-producer">conforming producer</a> MUST
+specify a media type of <code>application/did+cbor</code> to downstream
+applications such as described in the section on <a
+data-cite="DID-CORE#did-resolution-metadata">DID Resolution Metadata</a>.
         </p>
 
         <p>
-The following examples express the CBOR <a data-cite="DID-CORE#representation">representation</a> of a
-<a data-cite="DID-CORE#DID document">DID document</a> in hexidecimal notation, and in CBOR diagnostic notation:
+The following examples express the CBOR <a
+data-cite="DID-CORE#representations">representation</a> of a <a
+data-cite="DID-CORE#dfn-did-documents">DID document</a> in hexidecimal notation,
+and in CBOR diagnostic notation:
         </p>
 
       <pre class="example nohighlight"
@@ -368,13 +400,14 @@ A2                                   # map(2)
       </section>
 
       <section>
-        <h3>CBOR Consumption</h3>
+        <h3>Consumption</h3>
 
         <p>
-The <a data-cite="DID-CORE#DID document">DID document</a> and any DID document data structures expressed by the <a
-data-cite="DID-CORE#data-model">data model</a> MUST be deserialized into the <a
-data-cite="DID-CORE#data-model">data model</a> according to the following <a data-cite="DID-CORE#consumption">consumption</a>
-rules:
+The <a data-cite="DID-CORE#DID-document">DID document</a> and any DID document
+data structures expressed by the <a data-cite="DID-CORE#data-model">data
+model</a> MUST be deserialized into the <a data-cite="DID-CORE#data-model">data
+model</a> according to the following <a
+data-cite="DID-CORE#consumption">consumption</a> rules:
         </p>
 
         <table class="simple column-width-50" id="cbor-representation-consumption">
@@ -429,18 +462,19 @@ this table.
             </tr>
             <tr>
               <td>
-<a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) where the
-<a data-cite="DID-CORE#data-model">data model</a> entry value is a <a data-cite="DID-CORE#datetime">datetime</a>
+<a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3) where the <a
+data-cite="DID-CORE#data-model">data model</a> entry value is a <a
+data-cite="DID-CORE#dfn-datetime">datetime</a>
               </td>
               <td>
-A <a data-cite="DID-CORE#datetime">datetime</a>.
+A <a data-cite="DID-CORE#dfn-datetime">datetime</a>.
               </td>
             </tr>
             <tr>
               <td>
 <a data-cite="RFC8949#section-3.1">CBOR string</a> (major type 3), where the <a
-data-cite="DID-CORE#data-model">data model</a> entry value type is <a data-cite="DID-CORE#string">string</a> or
-unknown
+data-cite="DID-CORE#data-model">data model</a> entry value type is <a
+data-cite="INFRA#string">string</a> or unknown.
               </td>
               <td>
 A <a data-cite="INFRA#string">string</a>.
@@ -452,7 +486,7 @@ A <a data-cite="INFRA#string">string</a>.
 choosing the shortest byte representation
               </td>
               <td>
-An <a data-cite="DID-CORE#integer">integer</a>.
+An <a data-cite="DID-CORE#dfn-integer">integer</a>.
               </td>
             </tr>
             <tr>
@@ -461,7 +495,7 @@ An <a data-cite="DID-CORE#integer">integer</a>.
 7)
               </td>
               <td>
-A <a data-cite="DID-CORE#double">double</a>.
+A <a data-cite="DID-CORE#dfn-double">double</a>.
               </td>
             </tr>
             <tr>
@@ -487,7 +521,10 @@ A <a data-cite="INFRA#null">null</a> value.
 
         <p>
 In addition to the data type consumption rules above, the following rules apply
-for <a data-cite="DID-CORE#conforming consumers</a> that deserialize CBOR <a data-cite="DID-CORE#">representations">conforming consumers</a> that deserialize CBOR <a data-cite="DID-CORE#">representations</a>:
+for <a data-cite="DID-CORE#dfn-conforming-consumer">conforming consumers</a> that
+deserialize CBOR <a data-cite="DID-CORE#dfn-conforming-consumer">conforming
+consumers</a>  that deserialize CBOR <a
+data-cite="DID-CORE#representations">representations</a>:
         </p>
 
         <ol>
@@ -499,20 +536,27 @@ indefinite-length items</a> are not allowed and MUST produce an error.
 A duplicate key in the same CBOR map MUST produce an error.
           </li>
           <li>
-All CBOR tags MUST be retained for CBOR <a data-cite="DID-CORE#production">production</a> regardless of whether
-they are optional.
+All CBOR tags MUST be retained for CBOR <a
+data-cite="DID-CORE#production">production</a> regardless of whether they are
+optional.
           </li>
         </ol>
 
         <p>
-If media type information is available to a <a data-cite="DID-CORE#conforming consumer">conforming consumer</a> and the
-media type value is <code>application/did+cbor</code>, then the data structure
-being consumed is a <a data-cite="DID-CORE#DID document">DID document</a>, and the root element MUST be a <a
-data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5) where all members of
-the object are entries of the <a data-cite="DID-CORE#DID document</a>. A <a data-cite="DID-CORE#">conforming consumer">DID document</a>. A <a data-cite="DID-CORE#">conforming consumer</a>
-for a CBOR <a data-cite="DID-CORE#representation</a> that is consuming a <a data-cite="DID-CORE#">DID document">representation</a> that is consuming a <a data-cite="DID-CORE#">DID document</a> with a
-root element that is not a <a data-cite="RFC8949#section-3.1">CBOR map</a>
-(major type 5) MUST report an error.
+If media type information is available to a <a
+data-cite="DID-CORE#dfn-conforming-consumer">conforming consumer</a> and the media
+type value is <code>application/did+cbor</code>, then the data structure being
+consumed is a <a data-cite="DID-CORE#did-document">DID document</a>, and the
+root element MUST be a <a data-cite="RFC8949#section-3.1">CBOR map</a> (major
+type 5) where all members of the object are entries of the <a
+data-cite="DID-CORE#did-document">DID document</a>. A <a
+data-cite="DID-CORE#did-document">DID document</a>. A <a
+data-cite="DID-CORE#dfn-conforming-consumer">conforming consumer</a> for a CBOR <a
+data-cite="DID-CORE#representations">representation</a> that is consuming a <a
+data-cite="DID-CORE#representations">representation</a> that is consuming a <a
+data-cite="DID-CORE#did-document">DID document</a> with a root element that is
+not a <a data-cite="RFC8949#section-3.1">CBOR map</a> (major type 5) MUST report
+an error.
         </p>
 
 
